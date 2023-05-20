@@ -62,8 +62,6 @@ def bentleyOttmann(segments: list[Segment]):
         elif event.type == EventType.INTERSECTION:
             segment1, segment2 = event.segment
             i1, i2 = status.index(segment1), status.index(segment2)
-            if segment1.id == 2 and segment2.id == 3:
-                pass
             segment1.current_y = event.point.y
             segment2.current_y = event.point.y
             swap_items_by_index(status, i1, i2)
@@ -91,6 +89,7 @@ def main():
         Segment(Point(1, 2), Point(7, 2)),
         Segment(Point(2, 3), Point(6, -1)),
         Segment(Point(4, 1), Point(4, 5)),
+        Segment(Point(5, 5), Point(5, 0)),
     ]
 
     print("Segments")
