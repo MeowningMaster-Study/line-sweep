@@ -6,6 +6,9 @@ class Point:
         self.x = x
         self.y = y
 
+    def __str__(self):
+        return f"({self.x}, {self.y})"
+
     def __lt__(self, other: "Point"):
         if self.x != other.x:
             return self.x < other.x

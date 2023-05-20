@@ -5,9 +5,13 @@ class Segment:
     def __init__(self, p1: Point, p2: Point):
         self.p1 = min(p1, p2)
         self.p2 = max(p1, p2)
+        self.current_y = p1.y
+
+    def __str__(self):
+        return f"<{self.p1}, {self.p2}>"
 
     def __lt__(self, other: "Segment"):
-        return self.p1.y < other.p1.y
+        return self.current_y < other.current_y
 
     def det(self):
         return self.p1.x * self.p2.y - self.p1.y * self.p2.x
