@@ -2,7 +2,12 @@ from point import Point
 
 
 class Segment:
+    id = 0
+
     def __init__(self, p1: Point, p2: Point):
+        self.id = Segment.id
+        Segment.id += 1
+
         self.p1 = min(p1, p2)
         self.p2 = max(p1, p2)
         self.current_y = p1.y

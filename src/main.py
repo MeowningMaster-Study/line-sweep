@@ -1,5 +1,4 @@
 import bisect
-import heapq
 from typing import Any
 from event import Event, EventType
 from point import Point
@@ -8,7 +7,7 @@ from segment import Segment
 
 
 def indexInList(index: int, list: list[Any]):
-    return index > 0 and index < len(list)
+    return index >= 0 and index < len(list)
 
 
 def swap_items_by_index(lst, index1, index2):
@@ -32,16 +31,21 @@ def bentleyOttmann(segments: list[Segment]):
             events.append(
                 Event(intersection, (segment1, segment2), EventType.INTERSECTION)
             )
+            # i1, i2 = status.index(segment1), status.index(segment2)
+            # print(segment1, segment2, i1, i2)
+
+    def printStatus():
+        print("Status")
+        for seg in status:
+            print(seg.id, seg)
 
     while len(events) != 0:
         event = events.pop()
         if event.type == EventType.BEGIN:
             index = bisect.bisect_left(status, event.segment)
             status.insert(index, event.segment)
-
-            # print("Active")
-            # for segment in status:
-            #     print(segment)
+            print("Begin", event.segment.id)
+            printStatus()
 
             if indexInList(index - 1, status):
                 processIntersection(event.segment, status[index - 1])
@@ -52,12 +56,28 @@ def bentleyOttmann(segments: list[Segment]):
             if indexInList(index - 1, status) and indexInList(index + 1, status):
                 processIntersection(status[index - 1], status[index + 1])
             del status[index]
+
+            print("End", event.segment.id)
+            printStatus()
         elif event.type == EventType.INTERSECTION:
             segment1, segment2 = event.segment
             i1, i2 = status.index(segment1), status.index(segment2)
+            if segment1.id == 2 and segment2.id == 3:
+                pass
             segment1.current_y = event.point.y
             segment2.current_y = event.point.y
             swap_items_by_index(status, i1, i2)
+
+            minI = min(i1, i2)
+            if indexInList(minI - 1, status):
+                processIntersection(status[minI - 1], status[minI])
+
+            maxI = max(i1, i2)
+            if indexInList(maxI + 1, status):
+                processIntersection(status[maxI + 1], status[minI])
+
+            print("Intersection", segment1.id, segment2.id)
+            printStatus()
         else:
             raise Exception("Unknown event type")
 
@@ -66,12 +86,17 @@ def bentleyOttmann(segments: list[Segment]):
 
 def main():
     segments = [
-        Segment(Point(1, 1), Point(5, 5)),
-        Segment(Point(2, 3), Point(6, -1)),
-        Segment(Point(1, 2), Point(7, 2)),
-        Segment(Point(4, 1), Point(4, 5)),
         Segment(Point(0, 0), Point(5, 1)),
+        Segment(Point(1, 1), Point(5, 5)),
+        Segment(Point(1, 2), Point(7, 2)),
+        Segment(Point(2, 3), Point(6, -1)),
+        Segment(Point(4, 1), Point(4, 5)),
     ]
+
+    print("Segments")
+    for segment in segments:
+        print(segment.id, segment)
+
     intersections = bentleyOttmann(segments)
     print("Intersections")
     for point in intersections:
